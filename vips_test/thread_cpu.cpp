@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "vips_test.h"
 
-/* How many pings we run at once.
-*/
-#define NUM_IN_PARALLEL (4)
+
 
 /* Number of tests we do in total.
 */
