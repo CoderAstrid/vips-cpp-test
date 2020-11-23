@@ -1,4 +1,4 @@
-﻿
+﻿//  [11/23/2020 astrid]
 // LargeImgMfcDemoDlg.cpp : implementation file
 //
 

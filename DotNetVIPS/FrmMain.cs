@@ -37,7 +37,7 @@ namespace DotNetVIPS
                 {-1, -1, -1}
             }, 8);
             im = im.Conv(mask, precision: Enums.Precision.Integer);
-
+            
             // finally, write the result back to a file on disk
             im.WriteToFile("E:\\Data\\Datasets\\LargeImages\\TEST_large_out.png");
         }
