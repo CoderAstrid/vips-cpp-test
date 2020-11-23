@@ -1,2 +1,2 @@
 # vips-cpp-test
-on the vips library at c++/mfc
+on the vips library at c++/mfc/c#
