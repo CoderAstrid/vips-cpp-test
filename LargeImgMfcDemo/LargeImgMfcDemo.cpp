@@ -65,7 +65,7 @@ BOOL CLargeImgMfcDemoApp::InitInstance()
 	// Change the registry key under which our settings are stored
 	
 	// such as the name of your company or organization
-	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+	SetRegistryKey(_T("LargeImageProcMfcDemo"));
 
 	CLargeImgMfcDemoDlg dlg;
 	m_pMainWnd = &dlg;

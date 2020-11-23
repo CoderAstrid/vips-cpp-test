@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "LargeImgProc.h"
+
+#include "syscore.h"
 #undef max
 #undef min
 #include <vips/vips8>
@@ -36,8 +38,8 @@ void CLargeImgProc::SetPathName(LPCTSTR lpszName)
 	CT2A ps(s);
 	sprintf_s(m_szPathName, "%s", ps.m_psz);
 
-	VImage img = VImage::new_from_file(m_szPathName, VImage::option()->set("access", VIPS_ACCESS_SEQUENTIAL_UNBUFFERED));
-
+	VImage img = VImage::new_from_file(m_szPathName, VImage::option()->set("access", VIPS_ACCESS_RANDOM));
+	
 	m_Width = img.width();
 	m_Height = img.height();
 }
@@ -55,4 +57,35 @@ CString CLargeImgProc::GetInfo() const
 	CString sRet(sFileInfo);
 
 	return sRet;
+}
+
+BOOL CLargeImgProc::Convert(int _tw, int _th, BOOL _save)
+{
+	BOOL res = FALSE;
+
+	VImage in = VImage::new_from_file(m_szPathName, VImage::option()->set("access", VIPS_ACCESS_RANDOM));
+	out_log("width = %d, height = %d\n", in.width(), in.height());
+	char * last_slash = strrchr(m_szPathName, '\\');
+	char szFolder[256] = "";
+	if (last_slash) {
+		strcpy_s(szFolder, m_szPathName);
+		szFolder[last_slash - m_szPathName+1] = 0;
+	}
+	int col = 0, row = 0;
+	for (int y = 0; y < in.height(); y += _th, row++) {
+		col = 0;
+		for (int x = 0; x < in.width(); x += _tw, col++) {			
+			int w = ymin(_tw, in.width() - 1 - x);
+			int h = ymin(_th, in.height() - 1 - y);
+			VImage crop = in.extract_area(x, y, w, h);
+			if (_save) {
+				char szname[256];
+				sprintf_s(szname, "%s%03d-%03d.bmp", szFolder, col, row);
+				crop.write_to_file(szname);
+			}
+		}
+	}
+	res = TRUE;
+
+	return res;
 }

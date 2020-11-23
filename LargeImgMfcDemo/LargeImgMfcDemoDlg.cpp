@@ -107,6 +107,9 @@ BOOL CLargeImgMfcDemoDlg::OnInitDialog()
 	//  when the application's main window is not a dialog
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
+	
+	m_edtW.SetWindowText(_T("3500"));
+	m_edtH.SetWindowText(_T("2800"));
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
@@ -164,6 +167,30 @@ HCURSOR CLargeImgMfcDemoDlg::OnQueryDragIcon()
 
 void CLargeImgMfcDemoDlg::OnBnClickedOk()
 {
+	CString sFileName;
+	m_edtPath.GetWindowText(sFileName);
+	errno_t err = 0;
+	if ((err = _taccess_s(sFileName, 0)) != 0) {
+		return;
+	}
+
+	m_proc.SetPathName(sFileName);
+	m_edtInfo.SetWindowText(m_proc.GetInfo());
+
+	int cw = 0, ch = 0;
+	BOOL bSave = FALSE;
+	CString s;
+
+	bSave = (m_chkSave.GetCheck() == BST_CHECKED);
+	m_edtW.GetWindowText(s);
+	cw = _ttoi(s);
+
+	m_edtH.GetWindowText(s);
+	ch = _ttoi(s);
+
+	if (cw < 1 || ch < 1)
+		return;
+	m_proc.Convert(cw, ch, bSave);
 }
 
 
@@ -174,8 +201,8 @@ void CLargeImgMfcDemoDlg::OnBnClickedCancel()
 
 void CLargeImgMfcDemoDlg::OnBnClickedBtnPath()
 {
-	TCHAR szFilter[] =	_T("Bitmap Files (*.bmp)|*.bmp|")
-						_T("Image Files|*.jpg; *.png|All Files (*.*)|*.*||");
+	TCHAR szFilter[] = _T("Bitmap Files (*.bmp)|*.bmp|")
+		_T("Image Files|*.bmp; *.jpg; *.png; *.tif; *.tiff |All Files (*.*)|*.*||");
 	CFileDialog dlg(TRUE, _T("bmp"), NULL, 6, szFilter);
 	if (dlg.DoModal() != IDOK)
 		return;
